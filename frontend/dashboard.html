@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard - Hospital Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 20px;
+    }
+    nav a {
+      padding: 12px 20px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 5px;
+      display: inline-block;
+    }
+    nav a:hover {
+      background: #0056b3;
+    }
+    .dashboard-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+    
+    .dashboard-card {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 20px;
+      width: 300px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .card-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: #007bff;
+    }
+    
+    .card-count {
+      font-size: 36px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #333333;
+    }
+    
+    .card-title {
+      color: #6c757d;
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    
+    .card-action {
+      margin-top: 15px;
+    }
+    
+    .card-action a {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .card-action a:hover {
+      background-color: #0056b3;
+    }
+    
+    .patients-card {
+      border-top: 4px solid #007bff;
+    }
+    
+    .doctors-card {
+      border-top: 4px solid #28a745;
+    }
+    
+    .appointments-card {
+      border-top: 4px solid #ffc107;
+    }
+    
+    .recent-section {
+      margin: 30px auto;
+      max-width: 1000px;
+    }
+    
+    .section-title {
+      text-align: left;
+      margin-bottom: 15px;
+      color: #333333;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+    
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    
+    table, th, td {
+      border: 1px solid #e0e0e0;
+      padding: 12px;
+    }
+    
+    th {
+      background: #007bff;
+      color: white;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Hospital Management System</h1>
+    <nav>
+      <a href="/">Data Tables</a>
+      <a href="/dashboard" class="active">Dashboard</a>
+      <a href="/add" style="background-color: #28a745;">Add New Data</a>
+    </nav>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="dashboard-card patients-card">
+      <div class="card-icon">👤</div>
+      <div class="card-count" id="patient-count">0</div>
+      <div class="card-title">Total Patients</div>
+      <div class="card-action">
+        <a href="/" onclick="localStorage.setItem('activeSection', 'patients')">View All</a>
+      </div>
+    </div>
+    
+    <div class="dashboard-card doctors-card">
+      <div class="card-icon">👨‍⚕️</div>
+      <div class="card-count" id="doctor-count">0</div>
+      <div class="card-title">Total Doctors</div>
+      <div class="card-action">
+        <a href="/" onclick="localStorage.setItem('activeSection', 'doctors')">View All</a>
+      </div>
+    </div>
+    
+    <div class="dashboard-card appointments-card">
+      <div class="card-icon">📅</div>
+      <div class="card-count" id="appointment-count">0</div>
+      <div class="card-title">Total Appointments</div>
+      <div class="card-action">
+        <a href="/" onclick="localStorage.setItem('activeSection', 'appointments')">View All</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="recent-section">
+    <h2 class="section-title">Recent Appointments</h2>
+    <table id="recent-appointments">
+      <tr>
+        <th>ID</th>
+        <th>Patient</th>
+        <th>Doctor</th>
+        <th>Date</th>
+      </tr>
+      
+    </table>
+  </div>
+
+  <script>
+   
+    function loadCounts() {
+     
+      fetch('/api/patients')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('patient-count').textContent = data.length;
+        })
+        .catch(error => {
+          console.error('Error loading patient count:', error);
+        });
+      
+      
+      fetch('/api/doctors')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('doctor-count').textContent = data.length;
+        })
+        .catch(error => {
+          console.error('Error loading doctor count:', error);
+        });
+      
+      
+      fetch('/api/appointments')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('appointment-count').textContent = data.length;
+          loadRecentAppointments(data);
+        })
+        .catch(error => {
+          console.error('Error loading appointment count:', error);
+        });
+    }
+    
+    
+    function loadRecentAppointments(appointments) {
+      const table = document.getElementById('recent-appointments');
+      
+      
+      while (table.rows.length > 1) {
+        table.deleteRow(1);
+      }
+      
+      
+      appointments.sort((a, b) => {
+        return new Date(b.appointment_date) - new Date(a.appointment_date);
+      });
+      
+      
+      const recentAppointments = appointments.slice(0, 5);
+      
+      if (recentAppointments.length > 0) {
+        
+        Promise.all([
+          fetch('/api/patients').then(response => response.json()),
+          fetch('/api/doctors').then(response => response.json())
+        ])
+        .then(([patients, doctors]) => {
+          
+          const patientMap = {};
+          patients.forEach(patient => {
+            patientMap[patient.patient_id] = patient.name;
+          });
+          
+          const doctorMap = {};
+          doctors.forEach(doctor => {
+            doctorMap[doctor.doctor_id] = doctor.name;
+          });
+          
+          
+          recentAppointments.forEach(appointment => {
+            const row = table.insertRow(-1);
+            row.insertCell(0).textContent = appointment.appointment_id;
+            row.insertCell(1).textContent = patientMap[appointment.patient_id] || appointment.patient_id;
+            row.insertCell(2).textContent = doctorMap[appointment.doctor_id] || appointment.doctor_id;
+            row.insertCell(3).textContent = appointment.appointment_date;
+          });
+        })
+        .catch(error => {
+          console.error('Error loading patient/doctor data:', error);
+        });
+      } else {
+        const row = table.insertRow(-1);
+        const cell = row.insertCell(0);
+        cell.colSpan = 4;
+        cell.textContent = 'No appointment data available';
+      }
+    }
+    
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      loadCounts();
+    });
+  </script>
+</body>
+</html>

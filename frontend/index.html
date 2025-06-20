@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hospital Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 20px;
+    }
+    nav a {
+      padding: 12px 20px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 5px;
+      display: inline-block;
+    }
+    nav a:hover {
+      background: #0056b3;
+    }
+    section {
+      display: none;
+      padding: 20px;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+    table, th, td {
+      border: 1px solid #999;
+      padding: 10px;
+    }
+    th {
+      background: #e0e0e0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Hospital Management System</h1>
+    <nav>
+      <a href="#" onclick="showSection('patients')">Patients</a>
+      <a href="#" onclick="showSection('doctors')">Doctors</a>
+      <a href="#" onclick="showSection('appointments')">Appointments</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/add" style="background-color: #28a745;">Add New Data</a>
+    </nav>
+  </header>
+
+  <section id="patients">
+    <h2>Patients List</h2>
+    <table>
+      <tr><th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Phone</th></tr>
+      
+    </table>
+  </section>
+
+  <section id="doctors">
+    <h2>Doctors List</h2>
+    <table>
+      <tr><th>ID</th><th>Name</th><th>Specialization</th><th>Phone</th></tr>
+      
+    </table>
+  </section>
+
+  <section id="appointments">
+    <h2>Appointments</h2>
+    <table>
+      <tr><th>ID</th><th>Patient ID</th><th>Doctor ID</th><th>Date</th></tr>
+      
+    </table>
+  </section>
+
+  <script>
+    
+    function showSection(id) {
+      var sections = document.querySelectorAll('section');
+      sections.forEach(function(section) {
+        section.style.display = 'none';
+      });
+      document.getElementById(id).style.display = 'block';
+      
+      
+      if (id === 'patients') {
+        loadPatients();
+      } else if (id === 'doctors') {
+        loadDoctors();
+      } else if (id === 'appointments') {
+        loadAppointments();
+      }
+    }
+    
+    
+    function loadPatients() {
+      console.log('Loading patients data...');
+      fetch('/api/patients')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Patients data received:', data);
+          const table = document.querySelector('#patients table');
+          
+          while (table.rows.length > 1) {
+            table.deleteRow(1);
+          }
+          
+          if (data && data.length > 0) {
+            data.forEach(patient => {
+              const row = table.insertRow(-1);
+              row.insertCell(0).textContent = patient.patient_id;
+              row.insertCell(1).textContent = patient.name;
+              row.insertCell(2).textContent = patient.age;
+              row.insertCell(3).textContent = patient.gender;
+              row.insertCell(4).textContent = patient.phone;
+            });
+          } else {
+            const row = table.insertRow(-1);
+            const cell = row.insertCell(0);
+            cell.colSpan = 5;
+            cell.textContent = 'No patient data available';
+          }
+        })
+        .catch(error => {
+          console.error('Error loading patients:', error);
+          const table = document.querySelector('#patients table');
+          const row = table.insertRow(-1);
+          const cell = row.insertCell(0);
+          cell.colSpan = 5;
+          cell.textContent = 'Error loading data: ' + error.message;
+        });
+    }
+    
+    
+    function loadDoctors() {
+      console.log('Loading doctors data...');
+      fetch('/api/doctors')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Doctors data received:', data);
+          const table = document.querySelector('#doctors table');
+          
+          while (table.rows.length > 1) {
+            table.deleteRow(1);
+          }
+         
+          if (data && data.length > 0) {
+            data.forEach(doctor => {
+              const row = table.insertRow(-1);
+              row.insertCell(0).textContent = doctor.doctor_id;
+              row.insertCell(1).textContent = doctor.name;
+              row.insertCell(2).textContent = doctor.specialty;
+              row.insertCell(3).textContent = doctor.phone;
+            });
+          } else {
+            const row = table.insertRow(-1);
+            const cell = row.insertCell(0);
+            cell.colSpan = 4;
+            cell.textContent = 'No doctor data available';
+          }
+        })
+        .catch(error => {
+          console.error('Error loading doctors:', error);
+          const table = document.querySelector('#doctors table');
+          const row = table.insertRow(-1);
+          const cell = row.insertCell(0);
+          cell.colSpan = 4;
+          cell.textContent = 'Error loading data: ' + error.message;
+        });
+    }
+    
+    
+    function loadAppointments() {
+      console.log('Loading appointments data...');
+      fetch('/api/appointments')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Appointments data received:', data);
+          const table = document.querySelector('#appointments table');
+          
+          while (table.rows.length > 1) {
+            table.deleteRow(1);
+          }
+          
+          if (data && data.length > 0) {
+            data.forEach(appointment => {
+              const row = table.insertRow(-1);
+              row.insertCell(0).textContent = appointment.appointment_id;
+              row.insertCell(1).textContent = appointment.patient_id;
+              row.insertCell(2).textContent = appointment.doctor_id;
+              row.insertCell(3).textContent = appointment.appointment_date;
+            });
+          } else {
+            const row = table.insertRow(-1);
+            const cell = row.insertCell(0);
+            cell.colSpan = 4;
+            cell.textContent = 'No appointment data available';
+          }
+        })
+        .catch(error => {
+          console.error('Error loading appointments:', error);
+          const table = document.querySelector('#appointments table');
+          const row = table.insertRow(-1);
+          const cell = row.insertCell(0);
+          cell.colSpan = 4;
+          cell.textContent = 'Error loading data: ' + error.message;
+        });
+    }
+    
+   
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      const activeSection = localStorage.getItem('activeSection');
+      if (activeSection && ['patients', 'doctors', 'appointments'].includes(activeSection)) {
+        showSection(activeSection);
+        
+        
+        localStorage.removeItem('activeSection');
+      } else {
+        
+        
+        showSection('patients');
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Data - Hospital Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: #007bff;
+      color: white;
+      padding: 20px;
+    }
+    nav a {
+      padding: 12px 20px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 5px;
+      display: inline-block;
+    }
+    nav a:hover {
+      background: #0056b3;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-section {
+      display: none;
+      text-align: left;
+    }
+    .form-section.active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .success-message {
+      color: green;
+      margin-top: 10px;
+      display: none;
+    }
+    .error-message {
+      color: red;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Hospital Management System - Add Data</h1>
+    <nav>
+      <a href="#" onclick="showForm('patient-form')">Add Patient</a>
+      <a href="#" onclick="showForm('doctor-form')">Add Doctor</a>
+      <a href="#" onclick="showForm('appointment-form')">Add Appointment</a>
+      <a href="/">Back to Data Tables</a>
+    </nav>
+  </header>
+
+  <div class="form-container">
+    <div id="patient-form" class="form-section">
+      <h2>Add New Patient</h2>
+      <form id="add-patient-form">
+        <div class="form-group">
+          <label for="patient-id">Patient ID:</label>
+          <input type="number" id="patient-id" required>
+        </div>
+        <div class="form-group">
+          <label for="patient-name">Name:</label>
+          <input type="text" id="patient-name" required>
+        </div>
+        <div class="form-group">
+          <label for="patient-age">Age:</label>
+          <input type="number" id="patient-age" required>
+        </div>
+        <div class="form-group">
+          <label for="patient-gender">Gender:</label>
+          <select id="patient-gender" required>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="patient-phone">Phone:</label>
+          <input type="text" id="patient-phone" required>
+        </div>
+        <button type="submit">Add Patient</button>
+      </form>
+      <div id="patient-success" class="success-message">Patient added successfully!</div>
+      <div id="patient-error" class="error-message">Error adding patient. Please try again.</div>
+    </div>
+
+    <div id="doctor-form" class="form-section">
+      <h2>Add New Doctor</h2>
+      <form id="add-doctor-form">
+        <div class="form-group">
+          <label for="doctor-id">Doctor ID:</label>
+          <input type="number" id="doctor-id" required>
+        </div>
+        <div class="form-group">
+          <label for="doctor-name">Name:</label>
+          <input type="text" id="doctor-name" required>
+        </div>
+        <div class="form-group">
+          <label for="doctor-specialty">Specialty:</label>
+          <input type="text" id="doctor-specialty" required>
+        </div>
+        <div class="form-group">
+          <label for="doctor-phone">Phone:</label>
+          <input type="text" id="doctor-phone" required>
+        </div>
+        <button type="submit">Add Doctor</button>
+      </form>
+      <div id="doctor-success" class="success-message">Doctor added successfully!</div>
+      <div id="doctor-error" class="error-message">Error adding doctor. Please try again.</div>
+    </div>
+
+    <div id="appointment-form" class="form-section">
+      <h2>Add New Appointment</h2>
+      <form id="add-appointment-form">
+        <div class="form-group">
+          <label for="appointment-id">Appointment ID:</label>
+          <input type="number" id="appointment-id" required>
+        </div>
+        <div class="form-group">
+          <label for="appointment-patient-id">Patient ID:</label>
+          <input type="number" id="appointment-patient-id" required>
+        </div>
+        <div class="form-group">
+          <label for="appointment-doctor-id">Doctor ID:</label>
+          <input type="number" id="appointment-doctor-id" required>
+        </div>
+        <div class="form-group">
+          <label for="appointment-date">Appointment Date:</label>
+          <input type="date" id="appointment-date" required>
+        </div>
+        <button type="submit">Add Appointment</button>
+      </form>
+      <div id="appointment-success" class="success-message">Appointment added successfully!</div>
+      <div id="appointment-error" class="error-message">Error adding appointment. Please try again.</div>
+    </div>
+  </div>
+
+  <script>
+    
+    function showForm(formId) {
+      const forms = document.querySelectorAll('.form-section');
+      forms.forEach(form => {
+        form.classList.remove('active');
+      });
+      document.getElementById(formId).classList.add('active');
+    }
+
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      showForm('patient-form');
+    });
+
+   
+    document.getElementById('add-patient-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const patientData = {
+        patient_id: document.getElementById('patient-id').value,
+        name: document.getElementById('patient-name').value,
+        age: document.getElementById('patient-age').value,
+        gender: document.getElementById('patient-gender').value,
+        phone: document.getElementById('patient-phone').value
+      };
+      
+      fetch('/api/add_patient', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(patientData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('patient-success').style.display = 'block';
+        document.getElementById('patient-error').style.display = 'none';
+        document.getElementById('add-patient-form').reset();
+        setTimeout(() => {
+          document.getElementById('patient-success').style.display = 'none';
+        }, 3000);
+      })
+      .catch(error => {
+        document.getElementById('patient-error').style.display = 'block';
+        document.getElementById('patient-success').style.display = 'none';
+        console.error('Error:', error);
+      });
+    });
+
+    document.getElementById('add-doctor-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const doctorData = {
+        doctor_id: document.getElementById('doctor-id').value,
+        name: document.getElementById('doctor-name').value,
+        specialty: document.getElementById('doctor-specialty').value,
+        phone: document.getElementById('doctor-phone').value
+      };
+      
+      fetch('/api/add_doctor', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(doctorData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('doctor-success').style.display = 'block';
+        document.getElementById('doctor-error').style.display = 'none';
+        document.getElementById('add-doctor-form').reset();
+        setTimeout(() => {
+          document.getElementById('doctor-success').style.display = 'none';
+        }, 3000);
+      })
+      .catch(error => {
+        document.getElementById('doctor-error').style.display = 'block';
+        document.getElementById('doctor-success').style.display = 'none';
+        console.error('Error:', error);
+      });
+    });
+
+    document.getElementById('add-appointment-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const appointmentData = {
+        appointment_id: document.getElementById('appointment-id').value,
+        patient_id: document.getElementById('appointment-patient-id').value,
+        doctor_id: document.getElementById('appointment-doctor-id').value,
+        appointment_date: document.getElementById('appointment-date').value
+      };
+      
+      fetch('/api/add_appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('appointment-success').style.display = 'block';
+        document.getElementById('appointment-error').style.display = 'none';
+        document.getElementById('add-appointment-form').reset();
+        setTimeout(() => {
+          document.getElementById('appointment-success').style.display = 'none';
+        }, 3000);
+      })
+      .catch(error => {
+        document.getElementById('appointment-error').style.display = 'block';
+        document.getElementById('appointment-success').style.display = 'none';
+        console.error('Error:', error);
+      });
+    });
+  </script>
+</body>
+</html>
